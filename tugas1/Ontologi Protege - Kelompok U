@@ -1,0 +1,364 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/asus/ontologies/2025/10/untitled-ontology-10#"
+     xml:base="http://www.semanticweb.org/asus/ontologies/2025/10/untitled-ontology-10"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/asus/ontologies/2025/10/untitled-ontology-10"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://example.org/coffee#Additive -->
+
+    <owl:Class rdf:about="http://example.org/coffee#Additive"/>
+    
+
+
+    <!-- http://example.org/coffee#AmericanoCoffee -->
+
+    <owl:Class rdf:about="http://example.org/coffee#AmericanoCoffee">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#CoffeeDrink"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#AusNzOrigin -->
+
+    <owl:Class rdf:about="http://example.org/coffee#AusNzOrigin">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#Origin"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#Base -->
+
+    <owl:Class rdf:about="http://example.org/coffee#Base"/>
+    
+
+
+    <!-- http://example.org/coffee#BicaCoffee -->
+
+    <owl:Class rdf:about="http://example.org/coffee#BicaCoffee">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#CoffeeDrink"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#BoiledMethod -->
+
+    <owl:Class rdf:about="http://example.org/coffee#BoiledMethod">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#PreparationMethod"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#BrewedCoffeeBase -->
+
+    <owl:Class rdf:about="http://example.org/coffee#BrewedCoffeeBase">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#Base"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#CafeMochaCoffee -->
+
+    <owl:Class rdf:about="http://example.org/coffee#CafeMochaCoffee">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#CoffeeDrink"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#CaffeMacchiatoCoffee -->
+
+    <owl:Class rdf:about="http://example.org/coffee#CaffeMacchiatoCoffee">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#CoffeeDrink"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#CappuccinoCoffee -->
+
+    <owl:Class rdf:about="http://example.org/coffee#CappuccinoCoffee">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#CoffeeDrink"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#ChocolateAdditive -->
+
+    <owl:Class rdf:about="http://example.org/coffee#ChocolateAdditive">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#Additive"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#CoffeeDrink -->
+
+    <owl:Class rdf:about="http://example.org/coffee#CoffeeDrink"/>
+    
+
+
+    <!-- http://example.org/coffee#CombinedMethod -->
+
+    <owl:Class rdf:about="http://example.org/coffee#CombinedMethod">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#PreparationMethod"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#CupServing -->
+
+    <owl:Class rdf:about="http://example.org/coffee#CupServing">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#ServingStyle"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#DemitasseServing -->
+
+    <owl:Class rdf:about="http://example.org/coffee#DemitasseServing">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#ServingStyle"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#DilutedMethod -->
+
+    <owl:Class rdf:about="http://example.org/coffee#DilutedMethod">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#PreparationMethod"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#EspressoBase -->
+
+    <owl:Class rdf:about="http://example.org/coffee#EspressoBase">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#Base"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#EspressoCoffee -->
+
+    <owl:Class rdf:about="http://example.org/coffee#EspressoCoffee">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#CoffeeDrink"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#FlatWhiteCoffee -->
+
+    <owl:Class rdf:about="http://example.org/coffee#FlatWhiteCoffee">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#CoffeeDrink"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#FoamedMilk -->
+
+    <owl:Class rdf:about="http://example.org/coffee#FoamedMilk">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#MilkType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#GreeceOrigin -->
+
+    <owl:Class rdf:about="http://example.org/coffee#GreeceOrigin">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#Origin"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#GreekCoffeeDrink -->
+
+    <owl:Class rdf:about="http://example.org/coffee#GreekCoffeeDrink">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#CoffeeDrink"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#HotWaterAdditive -->
+
+    <owl:Class rdf:about="http://example.org/coffee#HotWaterAdditive">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#Additive"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#IndonesiaOrigin -->
+
+    <owl:Class rdf:about="http://example.org/coffee#IndonesiaOrigin">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#Origin"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#ItalyOrigin -->
+
+    <owl:Class rdf:about="http://example.org/coffee#ItalyOrigin">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#Origin"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#KopiTubrukCoffee -->
+
+    <owl:Class rdf:about="http://example.org/coffee#KopiTubrukCoffee">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#CoffeeDrink"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#LargeCupServing -->
+
+    <owl:Class rdf:about="http://example.org/coffee#LargeCupServing">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#ServingStyle"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#LatteCoffee -->
+
+    <owl:Class rdf:about="http://example.org/coffee#LatteCoffee">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#CoffeeDrink"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#LatteMacchiatoCoffee -->
+
+    <owl:Class rdf:about="http://example.org/coffee#LatteMacchiatoCoffee">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#LatteCoffee"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#MicrofoamMilk -->
+
+    <owl:Class rdf:about="http://example.org/coffee#MicrofoamMilk">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#MilkType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#MilkType -->
+
+    <owl:Class rdf:about="http://example.org/coffee#MilkType"/>
+    
+
+
+    <!-- http://example.org/coffee#NoAdditive -->
+
+    <owl:Class rdf:about="http://example.org/coffee#NoAdditive">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#Additive"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#NoMilk -->
+
+    <owl:Class rdf:about="http://example.org/coffee#NoMilk">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#MilkType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#Origin -->
+
+    <owl:Class rdf:about="http://example.org/coffee#Origin"/>
+    
+
+
+    <!-- http://example.org/coffee#PortugalOrigin -->
+
+    <owl:Class rdf:about="http://example.org/coffee#PortugalOrigin">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#Origin"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#PreparationMethod -->
+
+    <owl:Class rdf:about="http://example.org/coffee#PreparationMethod"/>
+    
+
+
+    <!-- http://example.org/coffee#PressureMethod -->
+
+    <owl:Class rdf:about="http://example.org/coffee#PressureMethod">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#PreparationMethod"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#ServingStyle -->
+
+    <owl:Class rdf:about="http://example.org/coffee#ServingStyle"/>
+    
+
+
+    <!-- http://example.org/coffee#SmallCupServing -->
+
+    <owl:Class rdf:about="http://example.org/coffee#SmallCupServing">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#ServingStyle"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#SteamedAndFoamedMilk -->
+
+    <owl:Class rdf:about="http://example.org/coffee#SteamedAndFoamedMilk">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#MilkType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#SteamedMilk -->
+
+    <owl:Class rdf:about="http://example.org/coffee#SteamedMilk">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#MilkType"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#SugarAdditive -->
+
+    <owl:Class rdf:about="http://example.org/coffee#SugarAdditive">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#Additive"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#TallGlassServing -->
+
+    <owl:Class rdf:about="http://example.org/coffee#TallGlassServing">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#ServingStyle"/>
+    </owl:Class>
+    
+
+
+    <!-- http://example.org/coffee#UnfilteredServing -->
+
+    <owl:Class rdf:about="http://example.org/coffee#UnfilteredServing">
+        <rdfs:subClassOf rdf:resource="http://example.org/coffee#ServingStyle"/>
+    </owl:Class>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi -->
+
