@@ -168,7 +168,9 @@ Generate ONLY the Cypher query, nothing else."""
         """
         system_prompt = """You are a helpful assistant that explains coffee knowledge graph query results in natural language.
 Convert the technical query results into a friendly, informative response.
-Be concise but informative. If there are multiple results, list them clearly.
+Be concise but informative.
+If there are multiple results, present them as a numbered list with each item on its own line (e.g., "1. Espresso", "2. Cappuccino").
+Do not place multiple list items on the same line.
 If there are no results, explain that politely."""
 
         user_prompt = f"""User asked: "{query}"
