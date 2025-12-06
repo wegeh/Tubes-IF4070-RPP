@@ -1,6 +1,8 @@
 import logging
 from typing import Any, Dict, List
 
+from config import Config
+from gemini_client import GeminiClient
 from neo4j_client import Neo4jClient
 from openrouter_client import OpenRouterClient
 
@@ -12,10 +14,21 @@ class RAGEngine:
     """Main RAG engine for the coffee knowledge graph system"""
 
     def __init__(self):
-        """Initialize RAG engine with Neo4j and OpenRouter clients"""
+        """Initialize RAG engine with Neo4j and LLM clients"""
         self.neo4j_client = Neo4jClient()
-        self.openrouter_client = OpenRouterClient()
+        self.llm_client = self._init_llm_client()
         self.connected = False
+
+    def _init_llm_client(self):
+        """Initialize LLM client based on configured provider"""
+        provider = Config.MODEL_PROVIDER
+        if provider == "google":
+            logger.info("Using Google Gemini provider")
+            return GeminiClient()
+        if provider == "openrouter":
+            logger.info("Using OpenRouter provider")
+            return OpenRouterClient()
+        raise ValueError(f"Unsupported MODEL_PROVIDER: {provider}")
 
     def connect(self) -> bool:
         """
@@ -61,7 +74,7 @@ class RAGEngine:
         try:
             # Step 1: Generate Cypher query from natural language
             logger.info(f"Processing question: {user_question}")
-            cypher_query = self.openrouter_client.generate_cypher(user_question)
+            cypher_query = self.llm_client.generate_cypher(user_question)
 
             if not cypher_query:
                 return {
@@ -94,7 +107,7 @@ class RAGEngine:
                 answer = "I couldn't find any results for your question. The query returned no data."
             else:
                 # Use LLM to format results
-                answer = self.openrouter_client.format_results(user_question, results)
+                answer = self.llm_client.format_results(user_question, results)
                 if not answer:
                     # Fallback to simple formatting
                     answer = self._format_results_simple(results)

@@ -211,7 +211,11 @@ atexit.register(cleanup_on_exit)
 
 if __name__ == "__main__":
     print(f"Starting Flask app in {Config.FLASK_ENV} mode")
-    print(f"Using OpenRouter model: {Config.OPENROUTER_MODEL}")
+    print(f"Model provider: {Config.MODEL_PROVIDER}")
+    if Config.MODEL_PROVIDER == "google":
+        print(f"Using Gemini model: {Config.GOOGLE_MODEL}")
+    else:
+        print(f"Using OpenRouter model: {Config.OPENROUTER_MODEL}")
     print(f"Neo4j URI: {Config.NEO4J_URI}")
 
     # Initialize application
