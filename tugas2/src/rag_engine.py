@@ -81,7 +81,7 @@ class RAGEngine:
                     "question": user_question,
                     "cypher": None,
                     "results": None,
-                    "answer": "I apologize, but I could not generate a valid query for your question. Please try rephrasing.",
+                    "answer": "I’m not able to answer that right now.",
                     "success": False,
                     "error": "Failed to generate Cypher query",
                 }
@@ -94,7 +94,7 @@ class RAGEngine:
                     "question": user_question,
                     "cypher": cypher_query,
                     "results": None,
-                    "answer": f"The generated query was invalid. Error: {error_msg}",
+                    "answer": "I’m not able to answer that right now.",
                     "success": False,
                     "error": f"Invalid Cypher: {error_msg}",
                 }
@@ -127,7 +127,7 @@ class RAGEngine:
                 "question": user_question,
                 "cypher": cypher_query if "cypher_query" in locals() else None,
                 "results": None,
-                "answer": f"Query validation error: {str(e)}",
+                "answer": "I’m not able to answer that right now.",
                 "success": False,
                 "error": str(e),
             }
@@ -137,7 +137,7 @@ class RAGEngine:
                 "question": user_question,
                 "cypher": cypher_query if "cypher_query" in locals() else None,
                 "results": None,
-                "answer": f"An error occurred while processing your question: {str(e)}",
+                "answer": "I’m not able to answer that right now.",
                 "success": False,
                 "error": str(e),
             }
@@ -201,13 +201,10 @@ class RAGEngine:
             "Which coffees have no milk?",
             "What coffees use steamed milk?",
             "Tell me about espresso",
-            "What is the difference between latte and cappuccino?",
             "Which coffees are from Indonesia?",
             "What coffees are boiled?",
             "Show me coffees with chocolate",
             "Which coffees are served in a tall glass?",
-            "What are the strongest coffees?",
-            "Find coffees similar to espresso",
         ]
 
     def __enter__(self):

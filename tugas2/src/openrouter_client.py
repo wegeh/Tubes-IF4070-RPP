@@ -56,6 +56,7 @@ Important Rules:
 7. Order results when appropriate
 8. Limit results to reasonable numbers (e.g., LIMIT 50)
 9. For comparison queries, return data from both entities
+10. Never emit a standalone WITH; only use WITH when passing explicit variables to the next clause
 
 Example transformations:
 - "coffees from Italy" → MATCH (c:Coffee)-[:ORIGINATES_FROM]->(o:Origin) WHERE o.code = 'italy' RETURN c.name
@@ -168,13 +169,14 @@ Generate ONLY the Cypher query, nothing else."""
             Formatted natural language response
         """
         system_prompt = """You are a helpful assistant that explains coffee knowledge graph query results in natural language.
-Convert the technical query results into a friendly, informative response.
-Begin with a brief explanation (one or two sentences) without mentioning any knowledge graph or data source.
-Then present the results as a numbered list with each item on its own line in the exact format:
+Convert the technical query results into a warm, concise response without mentioning any knowledge graph or data source.
+If there is exactly one result, describe it in a natural sentence without numbering.
+If there are multiple results, give a brief lead-in sentence, then list them as a numbered list with each item on its own line in the exact format:
 1. Item
 2. Item
 3. Item
 Each number must be on its own line—no multiple items on one line, no semicolons, and use actual line breaks (or <br> tags) between items.
+Complete every sentence; do not leave items hanging. If a value is missing or unknown, explicitly say "not specified".
 Leave no extra text after the list.
 If there are no results, respond with a polite single sentence stating that no results were found."""
 
