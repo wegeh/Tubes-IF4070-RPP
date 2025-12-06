@@ -68,33 +68,45 @@ class Config:
         return """
         Coffee Knowledge Graph Schema:
 
+        IMPORTANT - Property Matching Rules:
+        - ALL nodes have two properties: 'code' and 'name'
+        - 'code': lowercase identifier for EXACT MATCHING (e.g., "none", "italy", "espresso")
+        - 'name': human-readable display name (e.g., "No Milk", "Italy", "Espresso")
+        - ALWAYS use 'code' property for WHERE clause filtering
+        - ALWAYS use 'name' property for RETURN clause display
+        - Example: WHERE m.code = 'none' (correct), NOT WHERE m.name = 'none' (wrong!)
+
         Node Types:
-        - Coffee: Individual coffee beverages (e.g., espresso, latte)
-        - Base: Coffee base type (espresso, brewed_coffee)
-        - MilkType: Type of milk used (none, steamed_milk, foamed_milk, microfoam, steamed_and_foamed)
-        - Additive: Extra ingredients (none, hot_water, sugar, chocolate)
-        - Preparation: Brewing method (pressure, boiled, diluted, combined)
-        - Serving: Serving style (small_cup, demitasse, large_cup, tall_glass, cup, unfiltered)
-        - Country: Country of origin (italy, portugal, australia_new_zealand, indonesia, greece)
+        - Coffee: Individual coffee beverages
+        - Base: Coffee base type
+        - MilkType: Type of milk used
+        - Additive: Extra ingredients
+        - PreparationMethod: Brewing method
+        - ServingStyle: Serving style
+        - Origin: Country/region of origin
 
         Relationship Types:
         - HAS_BASE: Coffee -> Base
-        - USES_MILK: Coffee -> MilkType
-        - CONTAINS: Coffee -> Additive
-        - PREPARED_BY: Coffee -> Preparation
-        - SERVED_IN: Coffee -> Serving
-        - ORIGINATES_FROM: Coffee -> Country
-        - SIMILAR_TO: Coffee <-> Coffee (bidirectional similarity)
+        - HAS_MILK: Coffee -> MilkType
+        - HAS_ADDITIVE: Coffee -> Additive
+        - USES_PREPARATION: Coffee -> PreparationMethod
+        - SERVED_IN: Coffee -> ServingStyle
+        - ORIGINATES_FROM: Coffee -> Origin
 
-        Coffee Properties:
-        - name (string): Coffee name
-        - description (string): Description of the coffee
-        - volume_ml (integer): Typical serving volume
-        - caffeine_level (string): high, medium, or low
+        Node Properties (all nodes have these):
+        - code (string): Unique lowercase identifier for matching
+        - name (string): Display name
 
-        Available Coffees (11 total):
+        Available Coffee codes:
         espresso, bica, americano, latte, caffe_macchiato, cappuccino,
         flat_white, latte_macchiato, kopi_tubruk, greek_coffee, cafe_mocha
+
+        Available Base codes: espresso, brewed_coffee
+        Available MilkType codes: none, steamed_milk, foamed_milk, steamed_and_foamed, microfoam, cold_milk
+        Available Additive codes: none, hot_water, sugar, chocolate
+        Available PreparationMethod codes: pressure, boiled, diluted, combined
+        Available ServingStyle codes: small_cup, tall_glass, large_cup, demitasse, cup, unfiltered
+        Available Origin codes: italy, portugal, indonesia, greece, australia_new_zealand
         """
 
 

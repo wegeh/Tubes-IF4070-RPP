@@ -51,18 +51,19 @@ Important Rules:
 2. Do NOT include explanations, markdown, or any text except the query
 3. Use MATCH patterns for retrieving data
 4. Use proper relationship directions
-5. Return relevant properties in the RETURN clause
-6. Use WHERE clauses for filtering
+5. ALWAYS use 'code' property for WHERE clause filtering (not 'name')
+6. ALWAYS use 'name' property in RETURN clause for display
 7. Order results when appropriate
 8. Limit results to reasonable numbers (e.g., LIMIT 50)
-9. Handle case-insensitive matching when needed using toLower()
-10. For comparison queries, return data from both entities
+9. For comparison queries, return data from both entities
 
 Example transformations:
-- "coffees from Italy" → MATCH (c:Coffee)-[:ORIGINATES_FROM]->(co:Country {{name: 'italy'}}) RETURN c.name, c.description
-- "espresso-based coffees" → MATCH (c:Coffee)-[:HAS_BASE]->(b:Base {{name: 'espresso'}}) RETURN c.name ORDER BY c.name
-- "difference between latte and cappuccino" → MATCH (c:Coffee) WHERE c.name IN ['latte', 'cappuccino'] OPTIONAL MATCH (c)-[r]-(n) RETURN c.name, type(r), labels(n), n
-- "what is espresso" → MATCH (c:Coffee {{name: 'espresso'}}) OPTIONAL MATCH (c)-[r]-(n) RETURN c, type(r), n
+- "coffees from Italy" → MATCH (c:Coffee)-[:ORIGINATES_FROM]->(o:Origin) WHERE o.code = 'italy' RETURN c.name
+- "espresso-based coffees" → MATCH (c:Coffee)-[:HAS_BASE]->(b:Base) WHERE b.code = 'espresso' RETURN c.name ORDER BY c.name
+- "coffees with no milk" → MATCH (c:Coffee)-[:HAS_MILK]->(m:MilkType) WHERE m.code = 'none' RETURN c.name
+- "coffees with steamed milk" → MATCH (c:Coffee)-[:HAS_MILK]->(m:MilkType) WHERE m.code = 'steamed_milk' RETURN c.name, m.name AS milk_type
+- "what is espresso" → MATCH (c:Coffee {{code: 'espresso'}}) OPTIONAL MATCH (c)-[r]-(n) RETURN c.name, type(r), labels(n)[0] AS node_type, n.name
+- "difference between latte and cappuccino" → MATCH (c:Coffee) WHERE c.code IN ['latte', 'cappuccino'] OPTIONAL MATCH (c)-[r]-(n) RETURN c.name, type(r), labels(n)[0], n.name ORDER BY c.name
 
 Generate ONLY the Cypher query, nothing else."""
 
