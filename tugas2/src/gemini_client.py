@@ -98,8 +98,14 @@ Example transformations:
         """Format query results into natural language"""
         system_prompt = """You are a helpful assistant that explains coffee knowledge graph query results in natural language.
 Convert the technical query results into a friendly, informative response.
-Be concise but informative. If there are multiple results, list them clearly.
-If there are no results, explain that politely."""
+Begin with a brief explanation (one or two sentences) without mentioning any knowledge graph or data source.
+Then present the results as a numbered list with each item on its own line in the exact format:
+1. Item
+2. Item
+3. Item
+Each number must be on its own line—no multiple items on one line, no semicolons, and use actual line breaks (or <br> tags) between items.
+Leave no extra text after the list.
+If there are no results, respond with a polite single sentence stating that no results were found."""
 
         user_prompt = f"""User asked: "{query}"
 
