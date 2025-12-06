@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coffee Knowledge Graph - RAG System</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>☕ Coffee Knowledge Graph</h1>
+        <p class="subtitle">
+          Ask me anything about coffee! Powered by Neo4j and RAG
+        </p>
+      </header>
+
+      <div class="main-content">
+        <div class="sample-questions">
+          <h3>Try these questions:</h3>
+          <div class="question-chips">
+            {% for question in sample_questions %}
+            <button class="chip" onclick="askQuestion('{{ question }}')">
+              {{ question }}
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="chat-container" id="chatContainer">
+          <div class="welcome-message">
+            <div class="logo">☕</div>
+            <h2>Welcome to Coffee Knowledge Graph!</h2>
+            <p>
+              I can answer questions about different types of coffee, their
+              ingredients, origins, and preparation methods.
+            </p>
+            <p class="hint">
+              Click a sample question above or type your own below.
+            </p>
+          </div>
+        </div>
+
+        <div class="input-section">
+          <div class="input-container">
+            <input
+              type="text"
+              id="userInput"
+              placeholder="Ask about coffee (e.g., 'What coffees are from Italy?')"
+              autocomplete="off"
+            />
+            <button id="sendButton" onclick="submitQuery()">
+              <span id="buttonText">Send</span>
+              <span
+                id="buttonSpinner"
+                class="spinner"
+                style="display: none"
+              ></span>
+            </button>
+          </div>
+          <div class="input-hint">
+            Press Enter to send •
+            <a href="#" onclick="clearHistory(); return false;"
+              >Clear History</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>Assignment II - Knowledge Representation and Reasoning (IF4070)</p>
+        <p>Built with Neo4j, OpenRouter, and Flask</p>
+      </footer>
+    </div>
+
+    <script>
+      // Handle enter input
+      document
+        .getElementById("userInput")
+        .addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            submitQuery();
+          }
+        });
+
+      // Ask sample question
+      function askQuestion(question) {
+        document.getElementById("userInput").value = question;
+        submitQuery();
+      }
+
+      // Submit query to backend
+      async function submitQuery() {
+        const input = document.getElementById("userInput");
+        const question = input.value.trim();
+
+        if (!question) {
+          return;
+        }
+
+        // Clear input
+        input.value = "";
+
+        // Show user message
+        addMessage(question, "user");
+
+        // Show loading
+        setLoading(true);
+
+        try {
+          const response = await fetch("/query", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ question: question }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            // Show bot response with details
+            addBotResponse(data);
+          } else {
+            addMessage(data.error || "An error occurred", "error");
+          }
+        } catch (error) {
+          addMessage(
+            "Failed to connect to server. Please check if the server is running.",
+            "error"
+          );
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      // Add message to chat
+      function addMessage(text, type) {
+        const chatContainer = document.getElementById("chatContainer");
+
+        // Remove welcome message if exists
+        const welcome = chatContainer.querySelector(".welcome-message");
+        if (welcome) {
+          welcome.remove();
+        }
+
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${type}-message`;
+
+        const contentDiv = document.createElement("div");
+        contentDiv.className = "message-content";
+        contentDiv.textContent = text;
+
+        messageDiv.appendChild(contentDiv);
+        chatContainer.appendChild(messageDiv);
+
+        // Scroll to bottom
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      // Add bot response with Cypher and results
+      function addBotResponse(data) {
+        const chatContainer = document.getElementById("chatContainer");
+
+        // Remove welcome message if exists
+        const welcome = chatContainer.querySelector(".welcome-message");
+        if (welcome) {
+          welcome.remove();
+        }
+
+        const messageDiv = document.createElement("div");
+        messageDiv.className = "message bot-message";
+
+        // Answer
+        const answerDiv = document.createElement("div");
+        answerDiv.className = "message-content";
+        answerDiv.textContent = data.answer;
+        messageDiv.appendChild(answerDiv);
+
+        // Cypher query (expandable)
+        if (data.cypher) {
+          const detailsDiv = document.createElement("details");
+          detailsDiv.className = "query-details";
+
+          const summaryDiv = document.createElement("summary");
+          summaryDiv.textContent = "View Generated Cypher Query";
+          detailsDiv.appendChild(summaryDiv);
+
+          const cypherPre = document.createElement("pre");
+          const cypherCode = document.createElement("code");
+          cypherCode.textContent = data.cypher;
+          cypherPre.appendChild(cypherCode);
+          detailsDiv.appendChild(cypherPre);
+
+          messageDiv.appendChild(detailsDiv);
+        }
+
+        // Results count
+        if (data.results && data.results.length > 0) {
+          const resultsInfo = document.createElement("div");
+          resultsInfo.className = "results-info";
+          resultsInfo.textContent = `Found ${data.results.length} result(s)`;
+          messageDiv.appendChild(resultsInfo);
+        }
+
+        chatContainer.appendChild(messageDiv);
+
+        // Scroll to bottom
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      // Set loading state
+      function setLoading(isLoading) {
+        const sendButton = document.getElementById("sendButton");
+        const buttonText = document.getElementById("buttonText");
+        const buttonSpinner = document.getElementById("buttonSpinner");
+        const userInput = document.getElementById("userInput");
+
+        if (isLoading) {
+          sendButton.disabled = true;
+          userInput.disabled = true;
+          buttonText.style.display = "none";
+          buttonSpinner.style.display = "inline-block";
+        } else {
+          sendButton.disabled = false;
+          userInput.disabled = false;
+          buttonText.style.display = "inline";
+          buttonSpinner.style.display = "none";
+        }
+      }
+
+      // Clear chat history
+      async function clearHistory() {
+        if (confirm("Are you sure you want to clear the chat history?")) {
+          try {
+            await fetch("/clear-history", { method: "POST" });
+            location.reload();
+          } catch (error) {
+            alert("Failed to clear history");
+          }
+        }
+      }
+
+      // Check server health on load
+      window.addEventListener("load", async function () {
+        try {
+          const response = await fetch("/health");
+          const data = await response.json();
+
+          if (!data.database_connected) {
+            addMessage(
+              "Warning: Not connected to Neo4j database. Please ensure Neo4j is running.",
+              "error"
+            );
+          }
+        } catch (error) {
+          console.error("Health check failed:", error);
+        }
+      });
+    </script>
+  </body>
+</html>
