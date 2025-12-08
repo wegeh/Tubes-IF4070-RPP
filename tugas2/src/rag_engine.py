@@ -72,37 +72,50 @@ class RAGEngine:
             }
 
         try:
-            # Step 1: Generate Cypher query from natural language
+            # Step 1: Generate and validate Cypher query from natural language (with retries)
             logger.info(f"Processing question: {user_question}")
-            cypher_query = self.llm_client.generate_cypher(user_question)
+            max_attempts = 3
+            cypher_query = None
+            validation_error = None
+            for attempt in range(1, max_attempts + 1):
+                prompt = (
+                    user_question
+                    if attempt == 1
+                    else f"{user_question}\nPrevious Cypher error: {validation_error or 'no query generated'}. Please fix and return only a valid Cypher query."
+                )
+                cypher_query = self.llm_client.generate_cypher(prompt)
+                if not cypher_query:
+                    validation_error = "Failed to generate Cypher query"
+                    logger.warning(
+                        f"Attempt {attempt}/{max_attempts}: no Cypher generated"
+                    )
+                    continue
+
+                is_valid, validation_error = self.neo4j_client.validate_query(
+                    cypher_query
+                )
+                if is_valid:
+                    break
+
+                logger.warning(
+                    f"Attempt {attempt}/{max_attempts}: invalid Cypher ({validation_error})"
+                )
+                cypher_query = None
 
             if not cypher_query:
                 return {
                     "question": user_question,
                     "cypher": None,
                     "results": None,
-                    "answer": "I’m not able to answer that right now.",
+                    "answer": "I'm not able to answer that right now.",
                     "success": False,
-                    "error": "Failed to generate Cypher query",
+                    "error": f"Invalid Cypher after retries: {validation_error}",
                 }
 
-            # Step 2: Validate the Cypher query
-            is_valid, error_msg = self.neo4j_client.validate_query(cypher_query)
-            if not is_valid:
-                logger.error(f"Invalid Cypher query: {error_msg}")
-                return {
-                    "question": user_question,
-                    "cypher": cypher_query,
-                    "results": None,
-                    "answer": "I’m not able to answer that right now.",
-                    "success": False,
-                    "error": f"Invalid Cypher: {error_msg}",
-                }
-
-            # Step 3: Execute the Cypher query
+            # Step 2: Execute the Cypher query
             results = self.neo4j_client.execute_query(cypher_query)
 
-            # Step 4: Format results into natural language answer
+            # Step 3: Format results into natural language answer
             if not results:
                 answer = "I couldn't find any results for your question. The query returned no data."
             else:
@@ -127,7 +140,7 @@ class RAGEngine:
                 "question": user_question,
                 "cypher": cypher_query if "cypher_query" in locals() else None,
                 "results": None,
-                "answer": "I’m not able to answer that right now.",
+                "answer": "I'm not able to answer that right now.",
                 "success": False,
                 "error": str(e),
             }
@@ -137,7 +150,7 @@ class RAGEngine:
                 "question": user_question,
                 "cypher": cypher_query if "cypher_query" in locals() else None,
                 "results": None,
-                "answer": "I’m not able to answer that right now.",
+                "answer": "I'm not able to answer that right now.",
                 "success": False,
                 "error": str(e),
             }
