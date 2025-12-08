@@ -10,26 +10,12 @@ logger = logging.getLogger(__name__)
 
 class Neo4jClient:
     def __init__(self, uri: str = None, user: str = None, password: str = None):
-        """
-        Initialize Neo4j client
-
-        Args:
-            uri: Neo4j connection URI (defaults to Config.NEO4J_URI)
-            user: Neo4j username (defaults to Config.NEO4J_USER)
-            password: Neo4j password (defaults to Config.NEO4J_PASSWORD)
-        """
         self.uri = uri or Config.NEO4J_URI
         self.user = user or Config.NEO4J_USER
         self.password = password or Config.NEO4J_PASSWORD
         self._driver = None
 
     def connect(self) -> bool:
-        """
-        Establish connection to Neo4j database
-
-        Returns:
-            bool: True if connection successful, False otherwise
-        """
         try:
             self._driver = GraphDatabase.driver(
                 self.uri, auth=(self.user, self.password)
@@ -43,7 +29,6 @@ class Neo4jClient:
             return False
 
     def close(self):
-        """Close Neo4j connection"""
         if self._driver:
             self._driver.close()
             logger.info("Neo4j connection closed")
@@ -51,36 +36,21 @@ class Neo4jClient:
     def execute_query(
         self, query: str, parameters: Dict[str, Any] = None
     ) -> List[Dict[str, Any]]:
-        """
-        Execute a Cypher query
-
-        Args:
-            query: Cypher query string
-            parameters: Query parameters (optional)
-
-        Returns:
-            List of result records as dictionaries
-        """
         if not self._driver:
             raise ConnectionError("Not connected to Neo4j. Call connect() first.")
 
         try:
             with self._driver.session() as session:
                 result = session.run(query, parameters or {})
-                # Convert records to list of dictionaries
                 records = []
                 for record in result:
-                    # Convert Record to dict
                     record_dict = dict(record)
-                    # Handle Node objects
                     for key, value in record_dict.items():
                         if hasattr(value, "_properties"):
-                            # It's a Neo4j Node - extract properties
                             record_dict[key] = dict(value._properties)
                         elif hasattr(value, "__iter__") and not isinstance(
                             value, (str, dict)
                         ):
-                            # It's a list - process each item
                             record_dict[key] = [
                                 (
                                     dict(item._properties)
@@ -107,17 +77,7 @@ class Neo4jClient:
             raise
 
     def validate_query(self, query: str) -> tuple[bool, Optional[str]]:
-        """
-        Validate a Cypher query without executing it
-
-        Args:
-            query: Cypher query to validate
-
-        Returns:
-            Tuple of (is_valid, error_message)
-        """
         try:
-            # Try to explain the query (doesn't execute it)
             explain_query = f"EXPLAIN {query}"
             with self._driver.session() as session:
                 session.run(explain_query)
@@ -128,12 +88,6 @@ class Neo4jClient:
             return False, str(e)
 
     def get_database_stats(self) -> Dict[str, int]:
-        """
-        Get database statistics
-
-        Returns:
-            Dictionary with node and relationship counts
-        """
         stats_query = """
         MATCH (n)
         WITH labels(n) as labels, count(*) as count
@@ -147,12 +101,6 @@ class Neo4jClient:
         return {record["type"]: record["count"] for record in results}
 
     def get_all_coffees(self) -> List[Dict[str, Any]]:
-        """
-        Retrieve all coffee nodes
-
-        Returns:
-            List of coffee dictionaries with properties
-        """
         query = """
         MATCH (c:Coffee)
         RETURN c.name as name, c.description as description,
@@ -162,15 +110,6 @@ class Neo4jClient:
         return self.execute_query(query)
 
     def get_coffee_details(self, coffee_name: str) -> Optional[Dict[str, Any]]:
-        """
-        Get detailed information about a specific coffee
-
-        Args:
-            coffee_name: Name of the coffee
-
-        Returns:
-            Dictionary with coffee details including all relationships
-        """
         query = """
         MATCH (c:Coffee {name: $name})
         OPTIONAL MATCH (c)-[:HAS_BASE]->(base:Base)
@@ -187,16 +126,6 @@ class Neo4jClient:
         return None
 
     def search_coffees(self, criteria: Dict[str, str]) -> List[Dict[str, Any]]:
-        """
-        Search for coffees matching specific criteria
-
-        Args:
-            criteria: Dictionary with search criteria (e.g., {'base': 'espresso', 'origin': 'italy'})
-
-        Returns:
-            List of matching coffees
-        """
-        # Build dynamic query based on criteria
         conditions = []
         params = {}
 
@@ -224,19 +153,14 @@ class Neo4jClient:
         return self.execute_query(query, params)
 
     def __enter__(self):
-        """Context manager entry"""
         self.connect()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        """Context manager exit"""
         self.close()
 
 
 if __name__ == "__main__":
-    # Test the Neo4j client
-    print("Testing Neo4j Client...")
-
     with Neo4jClient() as client:
         print("\n1. Database Statistics:")
         stats = client.get_database_stats()

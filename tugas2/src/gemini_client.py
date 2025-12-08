@@ -11,8 +11,6 @@ logger = logging.getLogger(__name__)
 
 
 class GeminiClient:
-    """Client for Google Gemini models"""
-
     def __init__(self, api_key: str = None, model: str = None):
         self.api_key = api_key or Config.GOOGLE_API_KEY
         self.model_name = model or Config.GOOGLE_MODEL
@@ -26,7 +24,6 @@ class GeminiClient:
     def _generate_text(
         self, prompt: str, temperature: float = 0.1, max_output_tokens: int = 800
     ) -> Optional[str]:
-        """Call Gemini with a simple text prompt"""
         try:
             response = self.model.generate_content(
                 prompt,
@@ -44,7 +41,6 @@ class GeminiClient:
     def generate_cypher(
         self, user_query: str, schema_description: str = None
     ) -> Optional[str]:
-        """Generate a Cypher query from natural language"""
         schema = schema_description or Config.get_schema_description()
 
         system_prompt = f"""You are an expert at converting natural language questions into Neo4j Cypher queries.
@@ -85,7 +81,6 @@ Example transformations:
         return None
 
     def chat(self, messages: list, temperature: float = 0.7) -> Optional[str]:
-        """Generic chat interface matching OpenRouterClient signature"""
         parts = []
         for message in messages:
             role = message.get("role", "user").upper()
@@ -96,7 +91,6 @@ Example transformations:
         return self._generate_text(prompt, temperature=temperature, max_output_tokens=800)
 
     def format_results(self, query: str, results: list) -> str:
-        """Format query results into natural language"""
         system_prompt = """You are a helpful assistant that explains coffee knowledge graph query results in natural language.
 Convert the technical query results into a warm, concise response without mentioning any knowledge graph or data source.
 If there is exactly one result, describe it in a natural sentence without numbering.

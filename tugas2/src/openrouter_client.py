@@ -10,16 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 class OpenRouterClient:
-    """Client for OpenRouter API"""
-
     def __init__(self, api_key: str = None, model: str = None):
-        """
-        Initialize OpenRouter client
-
-        Args:
-            api_key: OpenRouter API key (defaults to Config.OPENROUTER_API_KEY)
-            model: Model to use (defaults to Config.OPENROUTER_MODEL)
-        """
         self.api_key = api_key or Config.OPENROUTER_API_KEY
         self.model = model or Config.OPENROUTER_MODEL
         self.base_url = Config.OPENROUTER_BASE_URL
@@ -30,16 +21,6 @@ class OpenRouterClient:
     def generate_cypher(
         self, user_query: str, schema_description: str = None
     ) -> Optional[str]:
-        """
-        Generate Cypher query from natural language
-
-        Args:
-            user_query: Natural language query from user
-            schema_description: Graph schema description (defaults to Config schema)
-
-        Returns:
-            Generated Cypher query string or None if generation fails
-        """
         schema = schema_description or Config.get_schema_description()
 
         system_prompt = f"""You are an expert at converting natural language questions into Neo4j Cypher queries.
@@ -83,7 +64,7 @@ Generate ONLY the Cypher query, nothing else."""
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": user_query},
                     ],
-                    "temperature": 0.1,  # Low temperature for consistent queries
+                    "temperature": 0.1,  
                     "max_tokens": 500,
                 },
                 timeout=30,
@@ -95,7 +76,6 @@ Generate ONLY the Cypher query, nothing else."""
             if "choices" in result and len(result["choices"]) > 0:
                 cypher_query = result["choices"][0]["message"]["content"].strip()
 
-                # Clean up the response - remove markdown code blocks if present
                 cypher_query = (
                     cypher_query.replace("```cypher", "").replace("```", "").strip()
                 )
@@ -120,16 +100,6 @@ Generate ONLY the Cypher query, nothing else."""
             return None
 
     def chat(self, messages: list, temperature: float = 0.7) -> Optional[str]:
-        """
-        General chat function for formatting responses
-
-        Args:
-            messages: List of message dictionaries with role and content
-            temperature: Sampling temperature (0.0 to 1.0)
-
-        Returns:
-            Generated response text
-        """
         try:
             response = requests.post(
                 self.base_url,
@@ -158,16 +128,6 @@ Generate ONLY the Cypher query, nothing else."""
             return None
 
     def format_results(self, query: str, results: list) -> str:
-        """
-        Format query results into natural language
-
-        Args:
-            query: Original user query
-            results: Query results from Neo4j
-
-        Returns:
-            Formatted natural language response
-        """
         system_prompt = """You are a helpful assistant that explains coffee knowledge graph query results in natural language.
 Convert the technical query results into a warm, concise response without mentioning any knowledge graph or data source.
 If there is exactly one result, describe it in a natural sentence without numbering.
@@ -196,9 +156,6 @@ Please provide a natural language response based on these results."""
 
 
 if __name__ == "__main__":
-    # Test OpenRouter client
-    print("Testing OpenRouter Client...")
-
     try:
         client = OpenRouterClient()
 
