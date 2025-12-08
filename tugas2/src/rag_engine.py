@@ -84,6 +84,13 @@ class RAGEngine:
                     else f"{user_question}\nPrevious Cypher error: {validation_error or 'no query generated'}. Please fix and return only a valid Cypher query."
                 )
                 cypher_query = self.llm_client.generate_cypher(prompt)
+                if cypher_query and cypher_query.strip().upper() == "OUT_OF_SCOPE":
+                    validation_error = "Out of scope"
+                    logger.warning(
+                        f"Attempt {attempt}/{max_attempts}: question deemed out of scope"
+                    )
+                    cypher_query = None
+                    continue
                 if not cypher_query:
                     validation_error = "Failed to generate Cypher query"
                     logger.warning(
@@ -103,6 +110,15 @@ class RAGEngine:
                 cypher_query = None
 
             if not cypher_query:
+                if validation_error == "Out of scope":
+                    return {
+                        "question": user_question,
+                        "cypher": None,
+                        "results": [],
+                        "answer": "I can only help with coffee questions. Try asking about coffee types, ingredients, or origins.",
+                        "success": True,
+                        "error": None,
+                    }
                 return {
                     "question": user_question,
                     "cypher": None,

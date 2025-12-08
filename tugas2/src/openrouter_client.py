@@ -47,24 +47,26 @@ class OpenRouterClient:
 {schema}
 
 Important Rules:
-1. Generate ONLY valid Cypher query syntax
-2. Do NOT include explanations, markdown, or any text except the query
-3. Use MATCH patterns for retrieving data
-4. Use proper relationship directions
-5. ALWAYS use 'code' property for WHERE clause filtering (not 'name')
-6. ALWAYS use 'name' property in RETURN clause for display
-7. Order results when appropriate
-8. Limit results to reasonable numbers (e.g., LIMIT 50)
-9. For comparison queries, return data from both entities
-10. Never emit a standalone WITH; only use WITH when passing explicit variables to the next clause
+1. Generate ONLY valid Cypher query syntax.
+2. Do NOT include explanations, markdown, or any text except the query.
+3. Use MATCH patterns for retrieving data.
+4. Use proper relationship directions.
+5. ALWAYS use 'code' property for WHERE clause filtering (not 'name').
+6. ALWAYS use 'name' property in RETURN clause for display.
+7. Order results when appropriate.
+8. Limit results to reasonable numbers (e.g., LIMIT 50).
+9. For comparison queries, return data from both entities.
+10. Never emit a standalone WITH; only use WITH when passing explicit variables to the next clause.
+11. If the user question is outside this coffee schema (e.g., cars, phones, general chat), respond with EXACTLY "OUT_OF_SCOPE" and nothing else.
 
 Example transformations:
-- "coffees from Italy" → MATCH (c:Coffee)-[:ORIGINATES_FROM]->(o:Origin) WHERE o.code = 'italy' RETURN c.name
-- "espresso-based coffees" → MATCH (c:Coffee)-[:HAS_BASE]->(b:Base) WHERE b.code = 'espresso' RETURN c.name ORDER BY c.name
-- "coffees with no milk" → MATCH (c:Coffee)-[:HAS_MILK]->(m:MilkType) WHERE m.code = 'none' RETURN c.name
-- "coffees with steamed milk" → MATCH (c:Coffee)-[:HAS_MILK]->(m:MilkType) WHERE m.code = 'steamed_milk' RETURN c.name, m.name AS milk_type
-- "what is espresso" → MATCH (c:Coffee {{code: 'espresso'}}) OPTIONAL MATCH (c)-[r]-(n) RETURN c.name, type(r), labels(n)[0] AS node_type, n.name
-- "difference between latte and cappuccino" → MATCH (c:Coffee) WHERE c.code IN ['latte', 'cappuccino'] OPTIONAL MATCH (c)-[r]-(n) RETURN c.name, type(r), labels(n)[0], n.name ORDER BY c.name
+- "coffees from Italy" -> MATCH (c:Coffee)-[:ORIGINATES_FROM]->(o:Origin) WHERE o.code = 'italy' RETURN c.name
+- "espresso-based coffees" -> MATCH (c:Coffee)-[:HAS_BASE]->(b:Base) WHERE b.code = 'espresso' RETURN c.name ORDER BY c.name
+- "coffees with no milk" -> MATCH (c:Coffee)-[:HAS_MILK]->(m:MilkType) WHERE m.code = 'none' RETURN c.name
+- "coffees with steamed milk" -> MATCH (c:Coffee)-[:HAS_MILK]->(m:MilkType) WHERE m.code = 'steamed_milk' RETURN c.name, m.name AS milk_type
+- "what is espresso" -> MATCH (c:Coffee {{code: 'espresso'}}) OPTIONAL MATCH (c)-[r]-(n) RETURN c.name, type(r), labels(n)[0] AS node_type, n.name
+- "difference between latte and cappuccino" -> MATCH (c:Coffee) WHERE c.code IN ['latte', 'cappuccino'] OPTIONAL MATCH (c)-[r]-(n) RETURN c.name, type(r), labels(n)[0], n.name ORDER BY c.name
+- "BMW cars on mobile" -> OUT_OF_SCOPE
 
 Generate ONLY the Cypher query, nothing else."""
 
@@ -102,9 +104,9 @@ Generate ONLY the Cypher query, nothing else."""
 
                 logger.info(f"Generated Cypher query: {cypher_query[:100]}...")
                 return cypher_query
-            else:
-                logger.error("No choices in OpenRouter response")
-                return None
+
+            logger.error("No choices in OpenRouter response")
+            return None
 
         except requests.exceptions.Timeout:
             logger.error("OpenRouter request timed out")
@@ -196,7 +198,7 @@ Please provide a natural language response based on these results."""
 
 
 if __name__ == "__main__":
-    # Test OpenRouter client
+    # Test the OpenRouter client
     print("Testing OpenRouter Client...")
 
     try:
