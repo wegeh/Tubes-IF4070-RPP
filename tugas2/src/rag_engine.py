@@ -11,16 +11,12 @@ logger = logging.getLogger(__name__)
 
 
 class RAGEngine:
-    """Main RAG engine for the coffee knowledge graph system"""
-
     def __init__(self):
-        """Initialize RAG engine with Neo4j and LLM clients"""
         self.neo4j_client = Neo4jClient()
         self.llm_client = self._init_llm_client()
         self.connected = False
 
     def _init_llm_client(self):
-        """Initialize LLM client based on configured provider"""
         provider = Config.MODEL_PROVIDER
         if provider == "google":
             logger.info("Using Google Gemini provider")
@@ -31,36 +27,14 @@ class RAGEngine:
         raise ValueError(f"Unsupported MODEL_PROVIDER: {provider}")
 
     def connect(self) -> bool:
-        """
-        Connect to Neo4j database
-
-        Returns:
-            bool: True if connection successful
-        """
         self.connected = self.neo4j_client.connect()
         return self.connected
 
     def disconnect(self):
-        """Disconnect from Neo4j"""
         self.neo4j_client.close()
         self.connected = False
 
     def query(self, user_question: str) -> Dict[str, Any]:
-        """
-        Process a natural language question and return formatted results
-
-        Args:
-            user_question: Natural language question about coffee
-
-        Returns:
-            Dictionary containing:
-                - question: Original question
-                - cypher: Generated Cypher query
-                - results: Raw query results from Neo4j
-                - answer: Natural language answer
-                - success: Boolean indicating if query was successful
-                - error: Error message if any
-        """
         if not self.connected:
             return {
                 "question": user_question,
@@ -72,7 +46,6 @@ class RAGEngine:
             }
 
         try:
-            # Step 1: Generate and validate Cypher query from natural language (with retries)
             logger.info(f"Processing question: {user_question}")
             max_attempts = 3
             cypher_query = None
@@ -128,17 +101,13 @@ class RAGEngine:
                     "error": f"Invalid Cypher after retries: {validation_error}",
                 }
 
-            # Step 2: Execute the Cypher query
             results = self.neo4j_client.execute_query(cypher_query)
 
-            # Step 3: Format results into natural language answer
             if not results:
                 answer = "I couldn't find any results for your question. The query returned no data."
             else:
-                # Use LLM to format results
                 answer = self.llm_client.format_results(user_question, results)
                 if not answer:
-                    # Fallback to simple formatting
                     answer = self._format_results_simple(results)
 
             return {
@@ -172,25 +141,13 @@ class RAGEngine:
             }
 
     def _format_results_simple(self, results: List[Dict[str, Any]]) -> str:
-        """
-        Simple fallback formatting for query results
-
-        Args:
-            results: List of result dictionaries
-
-        Returns:
-            Formatted string
-        """
         if not results:
             return "No results found."
 
-        # Format based on result structure
         if len(results) == 1 and len(results[0]) == 1:
-            # Single value result
             key = list(results[0].keys())[0]
             return f"Result: {results[0][key]}"
 
-        # Multiple results or complex structure
         formatted = []
         for i, record in enumerate(results, 1):
             if len(results) > 1:
@@ -201,11 +158,9 @@ class RAGEngine:
         return "\n".join(formatted)
 
     def _format_record(self, record: Dict[str, Any]) -> str:
-        """Format a single record"""
         parts = []
         for key, value in record.items():
             if isinstance(value, dict):
-                # It's a node or nested object
                 if "name" in value:
                     parts.append(f"{key}: {value['name']}")
                 elif "description" in value:
@@ -218,12 +173,6 @@ class RAGEngine:
         return ", ".join(parts) if parts else str(record)
 
     def get_sample_questions(self) -> List[str]:
-        """
-        Get list of sample questions users can ask
-
-        Returns:
-            List of sample questions
-        """
         return [
             "What coffees are from Italy?",
             "Show me all espresso-based coffees",
@@ -237,21 +186,16 @@ class RAGEngine:
         ]
 
     def __enter__(self):
-        """Context manager entry"""
         self.connect()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        """Context manager exit"""
         self.disconnect()
 
 
 if __name__ == "__main__":
-    # Test the RAG engine
-    print("Testing RAG Engine...")
     try:
         with RAGEngine() as rag:
-            # Test queries
             test_questions = [
                 "What coffees are from Italy?",
                 "Tell me about espresso",
@@ -267,7 +211,7 @@ if __name__ == "__main__":
                 if result["success"]:
                     print(f"Cypher: {result['cypher']}")
                     print(f"\nResults ({len(result['results'])} records):")
-                    for record in result["results"][:3]:  # Show first 3
+                    for record in result["results"][:3]:  
                         print(f"  {record}")
                     print(f"\nAnswer: {result['answer']}")
                 else:

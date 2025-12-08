@@ -9,7 +9,6 @@ load_dotenv(dotenv_path=env_path)
 
 
 class Config:
-    # Model Provider
     MODEL_PROVIDER = os.getenv("MODEL_PROVIDER", "google").lower()
 
     # OpenRouter Configuration
@@ -40,7 +39,6 @@ class Config:
 
     @classmethod
     def validate(cls):
-        """Validate required configuration"""
         errors = []
 
         if cls.MODEL_PROVIDER == "openrouter":
@@ -64,7 +62,6 @@ class Config:
 
     @classmethod
     def get_schema_description(cls):
-        """Returns schema description for LLM prompting"""
         return """
         Coffee Knowledge Graph Schema:
 
@@ -111,7 +108,6 @@ class Config:
 
 
 if __name__ == "__main__":
-    # Test configuration
     try:
         Config.validate()
         print("Configuration is valid")
