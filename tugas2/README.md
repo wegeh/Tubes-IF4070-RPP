@@ -46,30 +46,31 @@ User Query (Natural Language)
 
 ```
 tugas2/
-├── docker-compose.yml          # Neo4j containerization
-├── .env.example                # Environment template
-├── requirements.txt            # Python dependencies
+├── docker-compose.yml                          # Neo4j containerization
+├── .env.example                                # Environment template
+├── requirements.txt                            # Python dependencies
 │
 ├── neo4j/
 │   ├── import/
-│   │   └── schema.cypher      # Database schema + data
-│   └── plugins/               # Exported plugins
+│   │   └── schema.cypher                       # Database schema + data
+│   └── plugins/                                # Exported plugins
 │
 ├── src/
-│   ├── app.py                 # Flask application
-│   ├── config.py              # Configuration management
-│   ├── gemini_client.py       # Gemini API client
-│   ├── neo4j_client.py        # Neo4j database client
-│   ├── openrouter_client.py   # OpenRouter API client
-│   ├── rag_engine.py          # Main RAG logic
+│   ├── app.py                                  # Flask application
+│   ├── config.py                               # Configuration management
+│   ├── gemini_client.py                        # Gemini API client
+│   ├── neo4j_client.py                         # Neo4j database client
+│   ├── openrouter_client.py                    # OpenRouter API client
+│   ├── rag_engine.py                           # Main RAG logic
 │   │
 │   ├── static/
-│   │   └── style.css          # Web UI styles
+│   │   └── style.css                           # Web UI styles
 │   │
 │   └── templates/
-│       └── index.html         # Chat interface
+│       └── index.html                          # Chat interface
 │
-└── README.md                  # This file
+├── Laporan Tugas Proyek 2 - Kelompok U.pdf     # documentation   
+└── README.md                                   # This file
 ```
 
 ---
