@@ -95,12 +95,28 @@ cp .env.example .env
 ```
 
 ### 3. Start Neo4j
+# run without dump
 ```bash
 # Start Neo4j container
 docker-compose up -d
 
 # setup cypher 
 docker exec -it neo4j-coffee cypher-shell -u neo4j -p password123 -f /import/setup_coffee_graph.cypher
+```
+
+# run with dump
+```bash
+# setup dump 
+docker compose run --rm neo4j neo4j-admin database load neo4j --from-path=/import --overwrite-destination
+
+# Start Neo4j container
+docker-compose up -d
+```
+
+# to clean data
+```bash
+# docker condition down first
+docker compose run --rm neo4j neo4j-admin database load neo4j --from-path=/import --overwrite-destination
 ```
 
 ### 4. Install Python Dependencies
